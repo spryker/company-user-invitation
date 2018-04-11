@@ -5,35 +5,41 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace Spryker\Zed\CompanyUserInvitation\Business\Model;
+namespace Spryker\Zed\CompanyUserInvitation\Business\Model\Validator;
 
 use Generated\Shared\Transfer\CompanyBusinessUnitCriteriaFilterTransfer;
 use Generated\Shared\Transfer\CompanyUserInvitationCriteriaFilterTransfer;
 use Generated\Shared\Transfer\CompanyUserInvitationTransfer;
 use Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyBusinessUnitFacadeInterface;
+use Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface;
 use Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface;
 
 class InvitationValidator implements InvitationValidatorInterface
 {
     /**
-     * @var array
-     */
-    protected $businessUnitCache;
-
-    /**
-     * @var array
-     */
-    protected $emailCache;
-
-    /**
      * @var string
      */
-    protected $validationError;
+    protected $errorMessage;
+
+    /**
+     * @var array
+     */
+    protected $businessUnitNameCache = [];
+
+    /**
+     * @var array
+     */
+    protected $emailCache = [];
 
     /**
      * @var \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface
      */
     private $repository;
+
+    /**
+     * @var \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface
+     */
+    private $companyUserFacade;
 
     /**
      * @var \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyBusinessUnitFacadeInterface
@@ -42,14 +48,17 @@ class InvitationValidator implements InvitationValidatorInterface
 
     /**
      * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface $repository
+     * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade
      * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyBusinessUnitFacadeInterface $companyBusinessUnitFacade
      */
     public function __construct(
         CompanyUserInvitationRepositoryInterface $repository,
+        CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade,
         CompanyUserInvitationToCompanyBusinessUnitFacadeInterface $companyBusinessUnitFacade
     ) {
-        $this->companyBusinessUnitFacade = $companyBusinessUnitFacade;
         $this->repository = $repository;
+        $this->companyUserFacade = $companyUserFacade;
+        $this->companyBusinessUnitFacade = $companyBusinessUnitFacade;
     }
 
     /**
@@ -59,15 +68,15 @@ class InvitationValidator implements InvitationValidatorInterface
      */
     public function isValidInvitation(CompanyUserInvitationTransfer $invitationTransfer): bool
     {
-        return $this->isValidBusinessUnit($invitationTransfer) && $this->isUniqueEmail($invitationTransfer);
+        return $this->isValidBusinessUnit($invitationTransfer) && $this->isValidEmail($invitationTransfer);
     }
 
     /**
      * @return string
      */
-    public function getValidationError(): string
+    public function getLastErrorMessage(): string
     {
-        return $this->validationError;
+        return $this->errorMessage;
     }
 
     /**
@@ -77,13 +86,12 @@ class InvitationValidator implements InvitationValidatorInterface
      */
     protected function isValidBusinessUnit(CompanyUserInvitationTransfer $invitationTransfer): bool
     {
-        if (!$this->businessUnitCache) {
+        if (!$this->businessUnitNameCache) {
             $this->populateBusinessUnitCache($invitationTransfer);
         }
 
-        $businessUnitName = $invitationTransfer->getCompanyBusinessUnit()->getName();
-        if (!in_array($businessUnitName, $this->businessUnitCache)) {
-            $this->validationError = sprintf('Business Unit %s is not valid', $businessUnitName);
+        if (!in_array($invitationTransfer->getCompanyBusinessUnitName(), $this->businessUnitNameCache)) {
+            $this->errorMessage = sprintf('Business Unit %s is not valid', $invitationTransfer->getCompanyBusinessUnitName());
 
             return false;
         }
@@ -96,15 +104,14 @@ class InvitationValidator implements InvitationValidatorInterface
      *
      * @return bool
      */
-    protected function isUniqueEmail(CompanyUserInvitationTransfer $invitationTransfer): bool
+    protected function isValidEmail(CompanyUserInvitationTransfer $invitationTransfer): bool
     {
         if (!$this->emailCache) {
             $this->populateEmailCache($invitationTransfer);
         }
 
-        $email = $invitationTransfer->getEmail();
-        if (in_array($email, $this->emailCache)) {
-            $this->validationError = sprintf('Email %s is already used', $email);
+        if (in_array($invitationTransfer->getEmail(), $this->emailCache)) {
+            $this->errorMessage = sprintf('Invitation for %s is already imported', $invitationTransfer->getEmail());
 
             return false;
         }
@@ -119,14 +126,15 @@ class InvitationValidator implements InvitationValidatorInterface
      */
     protected function populateBusinessUnitCache(CompanyUserInvitationTransfer $invitationTransfer)
     {
+        $companyUserTransfer = $this->companyUserFacade->getCompanyUserById($invitationTransfer->getFkCompanyUser());
         $companyBusinessUnitCriteriaFilter = new CompanyBusinessUnitCriteriaFilterTransfer();
-        $companyBusinessUnitCriteriaFilter->setIdCompany($invitationTransfer->getCompanyUser()->getFkCompany());
+        $companyBusinessUnitCriteriaFilter->setIdCompany($companyUserTransfer->getFkCompany());
         $companyBusinessUnitCollectionTransfer = $this->companyBusinessUnitFacade->getCompanyBusinessUnitCollection(
             $companyBusinessUnitCriteriaFilter
         );
 
         foreach ($companyBusinessUnitCollectionTransfer->getCompanyBusinessUnits() as $companyBusinessUnitTransfer) {
-            $this->businessUnitCache[] = $companyBusinessUnitTransfer->getName();
+            $this->businessUnitNameCache[] = $companyBusinessUnitTransfer->getName();
         }
     }
 
@@ -135,10 +143,10 @@ class InvitationValidator implements InvitationValidatorInterface
      *
      * @return void
      */
-    private function populateEmailCache(CompanyUserInvitationTransfer $invitationTransfer)
+    protected function populateEmailCache(CompanyUserInvitationTransfer $invitationTransfer)
     {
         $companyUserInvitationCriteriaFilterTransfer = new CompanyUserInvitationCriteriaFilterTransfer();
-        $companyUserInvitationCriteriaFilterTransfer->setFkCompanyUser($invitationTransfer->getCompanyUser()->getIdCompanyUser());
+        $companyUserInvitationCriteriaFilterTransfer->setFkCompanyUser($invitationTransfer->getFkCompanyUser());
         $companyUserInvitationCollection = $this->repository->getCompanyUserInvitationCollection(
             $companyUserInvitationCriteriaFilterTransfer
         );

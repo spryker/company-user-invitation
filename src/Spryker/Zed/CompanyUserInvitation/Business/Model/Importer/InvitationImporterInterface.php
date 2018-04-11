@@ -5,13 +5,12 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace Spryker\Client\CompanyUserInvitation\Zed;
+namespace Spryker\Zed\CompanyUserInvitation\Business\Model\Importer;
 
 use Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer;
-use Generated\Shared\Transfer\CompanyUserInvitationCriteriaFilterTransfer;
 use Generated\Shared\Transfer\CompanyUserInvitationImportReportTransfer;
 
-interface CompanyUserInvitationStubInterface
+interface InvitationImporterInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer $companyUserInvitationCollectionTransfer
@@ -21,13 +20,4 @@ interface CompanyUserInvitationStubInterface
     public function importInvitations(
         CompanyUserInvitationCollectionTransfer $companyUserInvitationCollectionTransfer
     ): CompanyUserInvitationImportReportTransfer;
-
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationCriteriaFilterTransfer $criteriaFilterTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer
-     */
-    public function getCompanyUserInvitationCollection(
-        CompanyUserInvitationCriteriaFilterTransfer $criteriaFilterTransfer
-    ): CompanyUserInvitationCollectionTransfer;
 }

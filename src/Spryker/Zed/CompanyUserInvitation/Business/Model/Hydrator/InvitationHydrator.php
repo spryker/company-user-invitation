@@ -5,52 +5,65 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace Spryker\Zed\CompanyUserInvitation\Business\Model;
+namespace Spryker\Zed\CompanyUserInvitation\Business\Model\Hydrator;
 
 use Generated\Shared\Transfer\CompanyBusinessUnitCriteriaFilterTransfer;
 use Generated\Shared\Transfer\CompanyUserInvitationTransfer;
 use Spryker\Service\UtilText\Model\Hash;
+use Spryker\Shared\CompanyUserInvitation\CompanyUserInvitationConstants;
 use Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyBusinessUnitFacadeInterface;
+use Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface;
 use Spryker\Zed\CompanyUserInvitation\Dependency\Service\CompanyUserInvitationToUtilTextInterface;
 use Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface;
 
 class InvitationHydrator implements InvitationHydratorInterface
 {
-    const STATUS_DEFAULT = 1;
-
     /**
      * @var array
      */
-    private $businessUnitCache;
+    protected $businessUnitCache = [];
+
+    /**
+     * @var \Generated\Shared\Transfer\CompanyUserInvitationStatusTransfer
+     */
+    protected $companyUserInvitationStatusCache;
 
     /**
      * @var \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface
      */
-    private $repository;
+    protected $repository;
+
+    /**
+     * @var \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface
+     */
+    private $companyUserFacade;
 
     /**
      * @var \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyBusinessUnitFacadeInterface
      */
-    private $companyBusinessUnitFacade;
+    protected $companyBusinessUnitFacade;
 
     /**
      * @var \Spryker\Zed\CompanyUserInvitation\Dependency\Service\CompanyUserInvitationToUtilTextInterface
      */
-    private $utilTextService;
+    protected $utilTextService;
 
     /**
      * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface $repository
+     * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade
      * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyBusinessUnitFacadeInterface $companyBusinessUnitFacade
      * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Service\CompanyUserInvitationToUtilTextInterface $utilTextService
      */
     public function __construct(
         CompanyUserInvitationRepositoryInterface $repository,
+        CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade,
         CompanyUserInvitationToCompanyBusinessUnitFacadeInterface $companyBusinessUnitFacade,
         CompanyUserInvitationToUtilTextInterface $utilTextService
     ) {
-        $this->companyBusinessUnitFacade = $companyBusinessUnitFacade;
         $this->repository = $repository;
+        $this->companyBusinessUnitFacade = $companyBusinessUnitFacade;
         $this->utilTextService = $utilTextService;
+        $this->companyUserFacade = $companyUserFacade;
     }
 
     /**
@@ -60,10 +73,9 @@ class InvitationHydrator implements InvitationHydratorInterface
      */
     public function hydrate(CompanyUserInvitationTransfer $invitationTransfer): CompanyUserInvitationTransfer
     {
-        $invitationTransfer = $this->setHash($invitationTransfer);
-        $invitationTransfer = $this->setFkCompanyBusinessUnit($invitationTransfer);
-        $invitationTransfer = $this->setFkCompanyUserInvitationStatus($invitationTransfer);
-        $invitationTransfer = $this->setFkCompanyUser($invitationTransfer);
+        $invitationTransfer->setHash($this->generateHash($invitationTransfer));
+        $invitationTransfer->setFkCompanyBusinessUnit($this->getIdCompanyBusinessUnit($invitationTransfer));
+        $invitationTransfer->setFkCompanyUserInvitationStatus($this->getIdCompanyUserInvitationStatus());
 
         return $invitationTransfer;
     }
@@ -71,59 +83,28 @@ class InvitationHydrator implements InvitationHydratorInterface
     /**
      * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
      *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
+     * @return string
      */
-    protected function setFkCompanyBusinessUnit(CompanyUserInvitationTransfer $invitationTransfer): CompanyUserInvitationTransfer
+    protected function generateHash(CompanyUserInvitationTransfer $invitationTransfer): string
+    {
+        return $this->utilTextService->hashValue(
+            sprintf('%s.%s', $invitationTransfer->getEmail(), microtime(true)),
+            Hash::SHA256
+        );
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
+     *
+     * @return int
+     */
+    protected function getIdCompanyBusinessUnit(CompanyUserInvitationTransfer $invitationTransfer): int
     {
         if (!$this->businessUnitCache) {
             $this->populateBusinessUnitCache($invitationTransfer);
         }
 
-        $invitationTransfer->setFkCompanyBusinessUnit(
-            $this->businessUnitCache[$invitationTransfer->getCompanyBusinessUnit()->getName()]
-        );
-
-        return $invitationTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
-    protected function setFkCompanyUserInvitationStatus(CompanyUserInvitationTransfer $invitationTransfer): CompanyUserInvitationTransfer
-    {
-        $invitationTransfer->setFkCompanyUserInvitationStatus(static::STATUS_DEFAULT);
-
-        return $invitationTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
-    protected function setHash(CompanyUserInvitationTransfer $invitationTransfer): CompanyUserInvitationTransfer
-    {
-        $salt = sprintf('%s.%s', $invitationTransfer->getEmail(), microtime(true));
-        $hash = $this->utilTextService->hashValue($salt, Hash::SHA256);
-        $invitationTransfer->setHash($hash);
-
-        return $invitationTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
-    protected function setFkCompanyUser(CompanyUserInvitationTransfer $invitationTransfer): CompanyUserInvitationTransfer
-    {
-        $invitationTransfer->setFkCompanyUser(
-            $invitationTransfer->getCompanyUser()->getIdCompanyUser()
-        );
-
-        return $invitationTransfer;
+        return $this->businessUnitCache[$invitationTransfer->getCompanyBusinessUnitName()];
     }
 
     /**
@@ -133,8 +114,9 @@ class InvitationHydrator implements InvitationHydratorInterface
      */
     protected function populateBusinessUnitCache(CompanyUserInvitationTransfer $invitationTransfer)
     {
+        $companyUserTransfer = $this->companyUserFacade->getCompanyUserById($invitationTransfer->getFkCompanyUser());
         $companyBusinessUnitCriteriaFilter = new CompanyBusinessUnitCriteriaFilterTransfer();
-        $companyBusinessUnitCriteriaFilter->setIdCompany($invitationTransfer->getCompanyUser()->getFkCompany());
+        $companyBusinessUnitCriteriaFilter->setIdCompany($companyUserTransfer->getFkCompany());
         $companyBusinessUnitCollectionTransfer = $this->companyBusinessUnitFacade->getCompanyBusinessUnitCollection(
             $companyBusinessUnitCriteriaFilter
         );
@@ -142,5 +124,21 @@ class InvitationHydrator implements InvitationHydratorInterface
         foreach ($companyBusinessUnitCollectionTransfer->getCompanyBusinessUnits() as $companyBusinessUnitTransfer) {
             $this->businessUnitCache[$companyBusinessUnitTransfer->getName()] = $companyBusinessUnitTransfer->getIdCompanyBusinessUnit();
         }
+    }
+
+    /**
+     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
+     *
+     * @return int
+     */
+    protected function getIdCompanyUserInvitationStatus(): int
+    {
+        if (!$this->companyUserInvitationStatusCache) {
+            $this->companyUserInvitationStatusCache = $this->repository->findCompanyUserInvitationStatusByStatusKey(
+                CompanyUserInvitationConstants::INVITATION_STATUS_NEW
+            );
+        }
+
+        return $this->companyUserInvitationStatusCache->getIdCompanyUserInvitationStatus();
     }
 }

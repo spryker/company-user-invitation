@@ -5,21 +5,16 @@
  * Use of this software requires acceptance of the Evaluation License Agreement. See LICENSE file.
  */
 
-namespace Spryker\Zed\CompanyUserInvitation\Business\Model;
+namespace Spryker\Zed\CompanyUserInvitation\Business\Model\Hydrator;
 
 use Generated\Shared\Transfer\CompanyUserInvitationTransfer;
 
-interface InvitationValidatorInterface
+interface InvitationHydratorInterface
 {
     /**
      * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
      *
-     * @return bool
+     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
      */
-    public function isValidInvitation(CompanyUserInvitationTransfer $invitationTransfer): bool;
-
-    /**
-     * @return string
-     */
-    public function getValidationError(): string;
+    public function hydrate(CompanyUserInvitationTransfer $invitationTransfer): CompanyUserInvitationTransfer;
 }
