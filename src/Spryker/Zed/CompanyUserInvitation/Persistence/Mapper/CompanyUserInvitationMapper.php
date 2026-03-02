@@ -15,11 +15,6 @@ use Propel\Runtime\Collection\Collection;
 
 class CompanyUserInvitationMapper implements CompanyUserInvitationMapperInterface
 {
-    /**
-     * @param \Propel\Runtime\Collection\Collection $companyUserInvitationCollection
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer
-     */
     public function mapCompanyUserInvitationCollection(
         Collection $companyUserInvitationCollection
     ): CompanyUserInvitationCollectionTransfer {
@@ -34,11 +29,6 @@ class CompanyUserInvitationMapper implements CompanyUserInvitationMapperInterfac
         return $companyUserInvitationCollectionTransfer;
     }
 
-    /**
-     * @param \Orm\Zed\CompanyUserInvitation\Persistence\SpyCompanyUserInvitation $spyCompanyUserInvitation
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     public function mapSpyCompanyUserInvitationToCompanyUserInvitationTransfer(
         SpyCompanyUserInvitation $spyCompanyUserInvitation
     ): CompanyUserInvitationTransfer {

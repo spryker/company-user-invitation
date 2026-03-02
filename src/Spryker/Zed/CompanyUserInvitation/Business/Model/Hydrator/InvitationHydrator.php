@@ -48,12 +48,6 @@ class InvitationHydrator implements InvitationHydratorInterface
      */
     protected $companyUserFacade;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface $repository
-     * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade
-     * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyBusinessUnitFacadeInterface $companyBusinessUnitFacade
-     * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Service\CompanyUserInvitationToUtilTextInterface $utilTextService
-     */
     public function __construct(
         CompanyUserInvitationRepositoryInterface $repository,
         CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade,
@@ -66,11 +60,6 @@ class InvitationHydrator implements InvitationHydratorInterface
         $this->companyUserFacade = $companyUserFacade;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     public function hydrate(CompanyUserInvitationTransfer $companyUserInvitationTransfer): CompanyUserInvitationTransfer
     {
         $companyUserInvitationTransfer->setHash($this->generateHash($companyUserInvitationTransfer));
@@ -80,11 +69,6 @@ class InvitationHydrator implements InvitationHydratorInterface
         return $companyUserInvitationTransfer;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return string
-     */
     protected function generateHash(CompanyUserInvitationTransfer $invitationTransfer): string
     {
         return $this->utilTextService->hashValue(
@@ -93,11 +77,6 @@ class InvitationHydrator implements InvitationHydratorInterface
         );
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return int
-     */
     protected function getIdCompanyBusinessUnit(CompanyUserInvitationTransfer $invitationTransfer): int
     {
         if (!$this->businessUnitCache) {
@@ -128,9 +107,6 @@ class InvitationHydrator implements InvitationHydratorInterface
         }
     }
 
-    /**
-     * @return int
-     */
     protected function getIdCompanyUserInvitationStatus(): int
     {
         if (!$this->companyUserInvitationStatusTransfer) {

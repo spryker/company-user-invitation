@@ -11,11 +11,6 @@ use Generated\Shared\Transfer\CompanyUserInvitationTransfer;
 
 interface InvitationMailerInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return void
-     */
     public function mailInvitation(
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
     ): void;

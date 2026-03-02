@@ -25,21 +25,11 @@ class CompanyUserInvitationToCompanyUserFacadeBridge implements CompanyUserInvit
         $this->companyUserFacade = $companyUserFacade;
     }
 
-    /**
-     * @param int $idCompanyUser
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserTransfer
-     */
     public function getCompanyUserById(int $idCompanyUser): CompanyUserTransfer
     {
         return $this->companyUserFacade->getCompanyUserById($idCompanyUser);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserTransfer $companyUserTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserResponseTransfer
-     */
     public function update(CompanyUserTransfer $companyUserTransfer): CompanyUserResponseTransfer
     {
         return $this->companyUserFacade->update($companyUserTransfer);

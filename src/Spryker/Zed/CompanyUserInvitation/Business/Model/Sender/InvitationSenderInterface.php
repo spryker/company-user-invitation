@@ -14,20 +14,10 @@ use Generated\Shared\Transfer\CompanyUserTransfer;
 
 interface InvitationSenderInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendResponseTransfer
-     */
     public function sendCompanyUserInvitation(
         CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
     ): CompanyUserInvitationSendResponseTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserTransfer $companyUserTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendBatchResponseTransfer
-     */
     public function sendCompanyUserInvitations(
         CompanyUserTransfer $companyUserTransfer
     ): CompanyUserInvitationSendBatchResponseTransfer;

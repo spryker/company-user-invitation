@@ -42,11 +42,6 @@ class InvitationSender implements InvitationSenderInterface
      */
     protected $invitationMailer;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\Business\Model\Reader\InvitationReaderInterface $invitationReader
-     * @param \Spryker\Zed\CompanyUserInvitation\Business\Model\Updater\InvitationUpdaterInterface $invitationUpdater
-     * @param \Spryker\Zed\CompanyUserInvitation\Business\Model\Mailer\InvitationMailerInterface $invitationMailer
-     */
     public function __construct(
         InvitationReaderInterface $invitationReader,
         InvitationUpdaterInterface $invitationUpdater,
@@ -57,11 +52,6 @@ class InvitationSender implements InvitationSenderInterface
         $this->invitationMailer = $invitationMailer;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendResponseTransfer
-     */
     public function sendCompanyUserInvitation(
         CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
     ): CompanyUserInvitationSendResponseTransfer {
@@ -86,11 +76,6 @@ class InvitationSender implements InvitationSenderInterface
         return $companyUserInvitationSendResponseTransfer;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserTransfer $companyUserTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendBatchResponseTransfer
-     */
     public function sendCompanyUserInvitations(
         CompanyUserTransfer $companyUserTransfer
     ): CompanyUserInvitationSendBatchResponseTransfer {
@@ -121,12 +106,6 @@ class InvitationSender implements InvitationSenderInterface
         return $companyUserRequestSendBatchResponseTransfer;
     }
 
-    /**
-     * @param int $idCompanyUser
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return bool
-     */
     protected function send(
         int $idCompanyUser,
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
@@ -140,12 +119,6 @@ class InvitationSender implements InvitationSenderInterface
         return $this->invitationUpdater->updateStatus($companyUserInvitationUpdateStatusRequestTransfer)->getIsSuccess();
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserTransfer $companyUserTransfer
-     * @param string $statusKey
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer
-     */
     protected function createCompanyUserInvitationCollection(
         CompanyUserTransfer $companyUserTransfer,
         string $statusKey

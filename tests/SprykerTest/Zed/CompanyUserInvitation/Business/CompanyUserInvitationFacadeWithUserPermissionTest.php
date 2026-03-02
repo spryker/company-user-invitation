@@ -77,9 +77,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
      */
     protected $permissionCollectionTransfer;
 
-    /**
-     * @return void
-     */
     public function setUp(): void
     {
         parent::setUp();
@@ -120,9 +117,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->tester->assignCompanyRolesToCompanyUser($this->companyUserTransfer);
     }
 
-    /**
-     * @return void
-     */
     public function testImportCompanyUserInvitationsShouldReturnNoErrorsWhenEmailsDoNotExist(): void
     {
         $companyUserInvitationCollection = (new CompanyUserInvitationCollectionTransfer())
@@ -139,9 +133,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->assertEmpty($companyUserInvitationImportResponseTransfer->getErrors());
     }
 
-    /**
-     * @return void
-     */
     public function testImportCompanyUserInvitationsShouldReturnErrorsWhenEmailsExist(): void
     {
         $companyUserInvitationTransfer = $this->createCompanyUserInvitationTransfer();
@@ -159,9 +150,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->assertNotEmpty($companyUserInvitationImportResponseTransfer->getErrors());
     }
 
-    /**
-     * @return void
-     */
     public function testGetCompanyUserInvitationCollectionShouldReturnCorrectData(): void
     {
         $this->haveCompanyUserInvitation();
@@ -180,9 +168,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->assertNotEmpty($companyUserInvitationCollectionTransfer->getCompanyUserInvitations()->count());
     }
 
-    /**
-     * @return void
-     */
     public function testSendCompanyUserInvitationShouldReturnSuccess(): void
     {
         $companyUserInvitationSendRequestTransfer = (new CompanyUserInvitationSendRequestTransfer())
@@ -195,9 +180,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->assertTrue($companyUserInvitationSendResponseTransfer->getIsSuccess());
     }
 
-    /**
-     * @return void
-     */
     public function testSendCompanyUserInvitationsShouldReturnSuccess(): void
     {
         $this->haveCompanyUserInvitation();
@@ -210,9 +192,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->assertEmpty(0, $companyUserInvitationSendBatchResponseTransfer->getInvitationsFailed());
     }
 
-    /**
-     * @return void
-     */
     public function testUpdateCompanyUserInvitationStatusShouldReturnSuccess(): void
     {
         $companyUserInvitationTransfer = $this->haveCompanyUserInvitation();
@@ -227,9 +206,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->assertTrue($companyUserInvitationUpdateStatusResponseTransfer->getIsSuccess());
     }
 
-    /**
-     * @return void
-     */
     public function testCreateCompanyUserInvitationShouldReturnSuccess(): void
     {
         $companyUserInvitationCreateRequestTransfer = (new CompanyUserInvitationCreateRequestTransfer())
@@ -242,9 +218,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->assertTrue($companyUserInvitationCreateResponseTransfer->getIsSuccess());
     }
 
-    /**
-     * @return void
-     */
     public function testDeleteCompanyUserInvitationShouldReturnSuccess(): void
     {
         $companyUserInvitationDeleteRequestTransfer = (new CompanyUserInvitationDeleteRequestTransfer())
@@ -257,11 +230,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->assertTrue($companyUserInvitationDeleteResponseTransfer->getIsSuccess());
     }
 
-    /**
-     * @param array $seedData
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     protected function createCompanyUserInvitationTransfer(array $seedData = []): CompanyUserInvitationTransfer
     {
         $seedData = $seedData + [
@@ -272,11 +240,6 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         return $this->tester->createCompanyUserInvitationTransfer($seedData);
     }
 
-    /**
-     * @param array $seedData
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     protected function haveCompanyUserInvitation(array $seedData = []): CompanyUserInvitationTransfer
     {
         $seedData = $seedData + [

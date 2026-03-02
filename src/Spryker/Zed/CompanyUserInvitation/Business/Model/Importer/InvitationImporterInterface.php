@@ -12,11 +12,6 @@ use Generated\Shared\Transfer\CompanyUserInvitationImportResponseTransfer;
 
 interface InvitationImporterInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationImportResponseTransfer
-     */
     public function importCompanyUserInvitations(
         CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
     ): CompanyUserInvitationImportResponseTransfer;

@@ -30,11 +30,6 @@ class CompanyUserInvitationHelper extends Module
      */
     public $dependencies = [];
 
-    /**
-     * @param array $seedData
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     public function haveCompanyUserInvitation(array $seedData = []): CompanyUserInvitationTransfer
     {
         $companyUserInvitationTransfer = (new CompanyUserInvitationBuilder($seedData))->build();
@@ -61,11 +56,6 @@ class CompanyUserInvitationHelper extends Module
         return $companyUserInvitationTransfer;
     }
 
-    /**
-     * @param array $seedData
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     public function createCompanyUserInvitationTransfer(array $seedData = []): CompanyUserInvitationTransfer
     {
         $companyUserInvitationTransfer = (new CompanyUserInvitationBuilder($seedData))->build();
@@ -108,9 +98,6 @@ class CompanyUserInvitationHelper extends Module
         $this->setDependencies();
     }
 
-    /**
-     * @return void
-     */
     protected function setDependencies(): void
     {
         foreach ($this->dependencies as $key => $value) {
@@ -118,9 +105,6 @@ class CompanyUserInvitationHelper extends Module
         }
     }
 
-    /**
-     * @return \Spryker\Zed\CompanyUserInvitation\Business\CompanyUserInvitationFacadeInterface
-     */
     protected function getCompanyUserInvitationFacade(): CompanyUserInvitationFacadeInterface
     {
         return $this->getLocator()->companyUserInvitation()->facade();

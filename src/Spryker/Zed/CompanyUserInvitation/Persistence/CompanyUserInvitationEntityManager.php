@@ -17,11 +17,6 @@ use Spryker\Zed\Kernel\Persistence\AbstractEntityManager;
  */
 class CompanyUserInvitationEntityManager extends AbstractEntityManager implements CompanyUserInvitationEntityManagerInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     public function saveCompanyUserInvitation(CompanyUserInvitationTransfer $companyUserInvitationTransfer): CompanyUserInvitationTransfer
     {
         $spyCompanyUserInvitation = $this->getFactory()
@@ -37,11 +32,6 @@ class CompanyUserInvitationEntityManager extends AbstractEntityManager implement
             ->mapSpyCompanyUserInvitationToCompanyUserInvitationTransfer($spyCompanyUserInvitation);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationStatusTransfer $companyUserInvitationStatusTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationStatusTransfer
-     */
     public function saveCompanyUserInvitationStatus(
         CompanyUserInvitationStatusTransfer $companyUserInvitationStatusTransfer
     ): CompanyUserInvitationStatusTransfer {
@@ -52,11 +42,6 @@ class CompanyUserInvitationEntityManager extends AbstractEntityManager implement
         return $companyUserInvitationStatusTransfer->fromArray($spyCompanyUserInvitationStatus->toArray(), true);
     }
 
-    /**
-     * @param int $idCompanyUserInvitation
-     *
-     * @return void
-     */
     public function deleteCompanyUserInvitationById(int $idCompanyUserInvitation): void
     {
         $this->getFactory()

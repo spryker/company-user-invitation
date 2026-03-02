@@ -23,19 +23,11 @@ class InvitationImporter implements InvitationImporterInterface
      */
     protected $invitationWriter;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\Business\Model\Writer\InvitationWriterInterface $invitationWriter
-     */
     public function __construct(InvitationWriterInterface $invitationWriter)
     {
         $this->invitationWriter = $invitationWriter;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationImportResponseTransfer
-     */
     public function importCompanyUserInvitations(
         CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
     ): CompanyUserInvitationImportResponseTransfer {

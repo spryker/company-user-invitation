@@ -12,11 +12,6 @@ use Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusResponseTransfer;
 
 interface InvitationUpdaterInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusResponseTransfer
-     */
     public function updateStatus(
         CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
     ): CompanyUserInvitationUpdateStatusResponseTransfer;

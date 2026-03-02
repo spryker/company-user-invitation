@@ -14,11 +14,6 @@ use Propel\Runtime\Collection\Collection;
 
 interface CompanyUserInvitationMapperInterface
 {
-    /**
-     * @param \Propel\Runtime\Collection\Collection $companyUserInvitationCollection
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer
-     */
     public function mapCompanyUserInvitationCollection(
         Collection $companyUserInvitationCollection
     ): CompanyUserInvitationCollectionTransfer;

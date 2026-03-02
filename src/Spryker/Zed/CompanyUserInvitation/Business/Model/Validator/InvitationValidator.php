@@ -46,11 +46,6 @@ class InvitationValidator implements InvitationValidatorInterface
      */
     protected $companyBusinessUnitFacade;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface $repository
-     * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade
-     * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyBusinessUnitFacadeInterface $companyBusinessUnitFacade
-     */
     public function __construct(
         CompanyUserInvitationRepositoryInterface $repository,
         CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade,
@@ -61,11 +56,6 @@ class InvitationValidator implements InvitationValidatorInterface
         $this->companyBusinessUnitFacade = $companyBusinessUnitFacade;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return bool
-     */
     public function isValidInvitation(CompanyUserInvitationTransfer $invitationTransfer): bool
     {
         return $this->isValidFirstName($invitationTransfer)
@@ -74,19 +64,11 @@ class InvitationValidator implements InvitationValidatorInterface
             && $this->isValidEmail($invitationTransfer);
     }
 
-    /**
-     * @return string
-     */
     public function getLastErrorMessage(): string
     {
         return $this->errorMessage;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return bool
-     */
     protected function isValidFirstName(CompanyUserInvitationTransfer $invitationTransfer): bool
     {
         if (!trim($invitationTransfer->getFirstName())) {
@@ -98,11 +80,6 @@ class InvitationValidator implements InvitationValidatorInterface
         return true;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return bool
-     */
     protected function isValidLastName(CompanyUserInvitationTransfer $invitationTransfer): bool
     {
         if (!trim($invitationTransfer->getLastName())) {
@@ -114,11 +91,6 @@ class InvitationValidator implements InvitationValidatorInterface
         return true;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return bool
-     */
     protected function isValidBusinessUnit(CompanyUserInvitationTransfer $invitationTransfer): bool
     {
         if (!$this->businessUnitNameCache) {
@@ -137,11 +109,6 @@ class InvitationValidator implements InvitationValidatorInterface
         return true;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return bool
-     */
     protected function isValidEmail(CompanyUserInvitationTransfer $invitationTransfer): bool
     {
         if (!$this->emailCache) {

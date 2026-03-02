@@ -27,66 +27,36 @@ use Spryker\Zed\Kernel\Communication\Controller\AbstractGatewayController;
  */
 class GatewayController extends AbstractGatewayController
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationImportResponseTransfer
-     */
     public function importCompanyUserInvitationsAction(
         CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
     ): CompanyUserInvitationImportResponseTransfer {
         return $this->getFacade()->importCompanyUserInvitations($companyUserInvitationImportRequestTransfer);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationGetCollectionRequestTransfer $companyUserInvitationGetCollectionRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer
-     */
     public function getCompanyUserInvitationCollectionAction(
         CompanyUserInvitationGetCollectionRequestTransfer $companyUserInvitationGetCollectionRequestTransfer
     ): CompanyUserInvitationCollectionTransfer {
         return $this->getFacade()->getCompanyUserInvitationCollection($companyUserInvitationGetCollectionRequestTransfer);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendResponseTransfer
-     */
     public function sendCompanyUserInvitationAction(
         CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
     ): CompanyUserInvitationSendResponseTransfer {
         return $this->getFacade()->sendCompanyUserInvitation($companyUserInvitationSendRequestTransfer);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserTransfer $companyUserTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendBatchResponseTransfer
-     */
     public function sendCompanyUserInvitationsAction(
         CompanyUserTransfer $companyUserTransfer
     ): CompanyUserInvitationSendBatchResponseTransfer {
         return $this->getFacade()->sendCompanyUserInvitations($companyUserTransfer);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusResponseTransfer
-     */
     public function updateCompanyUserInvitationStatusAction(
         CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
     ): CompanyUserInvitationUpdateStatusResponseTransfer {
         return $this->getFacade()->updateCompanyUserInvitationStatus($companyUserInvitationUpdateStatusRequestTransfer);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     public function getCompanyUserInvitationByHashAction(
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
     ): CompanyUserInvitationTransfer {

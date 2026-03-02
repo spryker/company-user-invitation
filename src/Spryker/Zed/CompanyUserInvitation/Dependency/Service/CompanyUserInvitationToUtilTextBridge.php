@@ -22,12 +22,6 @@ class CompanyUserInvitationToUtilTextBridge implements CompanyUserInvitationToUt
         $this->utilTextService = $utilTextService;
     }
 
-    /**
-     * @param string $value
-     * @param string $algorithm
-     *
-     * @return string
-     */
     public function hashValue(string $value, string $algorithm): string
     {
         return $this->utilTextService->hashValue($value, $algorithm);

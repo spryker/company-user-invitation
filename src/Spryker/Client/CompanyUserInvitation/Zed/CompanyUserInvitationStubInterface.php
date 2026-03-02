@@ -21,56 +21,26 @@ use Generated\Shared\Transfer\CompanyUserTransfer;
 
 interface CompanyUserInvitationStubInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationImportResponseTransfer
-     */
     public function importCompanyUserInvitations(
         CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
     ): CompanyUserInvitationImportResponseTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationGetCollectionRequestTransfer $companyUserInvitationGetCollectionRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer
-     */
     public function getCompanyUserInvitationCollection(
         CompanyUserInvitationGetCollectionRequestTransfer $companyUserInvitationGetCollectionRequestTransfer
     ): CompanyUserInvitationCollectionTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendResponseTransfer
-     */
     public function sendCompanyUserInvitation(
         CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
     ): CompanyUserInvitationSendResponseTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserTransfer $companyUserTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendBatchResponseTransfer
-     */
     public function sendCompanyUserInvitations(
         CompanyUserTransfer $companyUserTransfer
     ): CompanyUserInvitationSendBatchResponseTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusResponseTransfer
-     */
     public function updateCompanyUserInvitationStatus(
         CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
     ): CompanyUserInvitationUpdateStatusResponseTransfer;
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     public function getCompanyUserInvitationByHash(
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
     ): CompanyUserInvitationTransfer;

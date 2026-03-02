@@ -26,10 +26,6 @@ class InvitationMailer implements InvitationMailerInterface
      */
     protected $mailFacade;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\CompanyUserInvitationConfig $config
-     * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToMailFacadeInterface $mailFacade
-     */
     public function __construct(
         CompanyUserInvitationConfig $config,
         CompanyUserInvitationToMailFacadeInterface $mailFacade
@@ -38,11 +34,6 @@ class InvitationMailer implements InvitationMailerInterface
         $this->config = $config;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return void
-     */
     public function mailInvitation(
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
     ): void {
@@ -54,11 +45,6 @@ class InvitationMailer implements InvitationMailerInterface
         $this->mailFacade->handleMail($mailTransfer);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return string
-     */
     protected function getInvitationLink(CompanyUserInvitationTransfer $companyUserInvitationTransfer): string
     {
         return sprintf(

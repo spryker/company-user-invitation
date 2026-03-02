@@ -12,11 +12,6 @@ use Generated\Shared\Transfer\CompanyUserInvitationCreateResponseTransfer;
 
 interface InvitationWriterInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationCreateRequestTransfer $companyUserInvitationCreateRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCreateResponseTransfer
-     */
     public function create(
         CompanyUserInvitationCreateRequestTransfer $companyUserInvitationCreateRequestTransfer
     ): CompanyUserInvitationCreateResponseTransfer;

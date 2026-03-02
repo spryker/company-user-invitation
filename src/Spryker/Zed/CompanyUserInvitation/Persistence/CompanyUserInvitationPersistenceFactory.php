@@ -36,9 +36,6 @@ class CompanyUserInvitationPersistenceFactory extends AbstractPersistenceFactory
         return SpyCompanyUserInvitationStatusQuery::create();
     }
 
-    /**
-     * @return \Spryker\Zed\CompanyUserInvitation\Persistence\Mapper\CompanyUserInvitationMapperInterface
-     */
     public function createCompanyUserInvitationMapper(): CompanyUserInvitationMapperInterface
     {
         return new CompanyUserInvitationMapper();

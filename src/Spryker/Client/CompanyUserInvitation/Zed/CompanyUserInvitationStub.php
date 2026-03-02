@@ -27,19 +27,11 @@ class CompanyUserInvitationStub implements CompanyUserInvitationStubInterface
      */
     protected $zedRequestClient;
 
-    /**
-     * @param \Spryker\Client\ZedRequest\ZedRequestClientInterface $zedRequestClient
-     */
     public function __construct(ZedRequestClientInterface $zedRequestClient)
     {
         $this->zedRequestClient = $zedRequestClient;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationImportResponseTransfer
-     */
     public function importCompanyUserInvitations(
         CompanyUserInvitationImportRequestTransfer $companyUserInvitationImportRequestTransfer
     ): CompanyUserInvitationImportResponseTransfer {
@@ -52,11 +44,6 @@ class CompanyUserInvitationStub implements CompanyUserInvitationStubInterface
         return $companyUserInvitationImportResponseTransfer;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationGetCollectionRequestTransfer $companyUserInvitationGetCollectionRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer
-     */
     public function getCompanyUserInvitationCollection(
         CompanyUserInvitationGetCollectionRequestTransfer $companyUserInvitationGetCollectionRequestTransfer
     ): CompanyUserInvitationCollectionTransfer {
@@ -69,11 +56,6 @@ class CompanyUserInvitationStub implements CompanyUserInvitationStubInterface
         return $companyUserInvitationCollectionTransfer;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendResponseTransfer
-     */
     public function sendCompanyUserInvitation(
         CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
     ): CompanyUserInvitationSendResponseTransfer {
@@ -86,11 +68,6 @@ class CompanyUserInvitationStub implements CompanyUserInvitationStubInterface
         return $companyUserInvitationSendResponseTransfer;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserTransfer $companyUserTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationSendBatchResponseTransfer
-     */
     public function sendCompanyUserInvitations(
         CompanyUserTransfer $companyUserTransfer
     ): CompanyUserInvitationSendBatchResponseTransfer {
@@ -103,11 +80,6 @@ class CompanyUserInvitationStub implements CompanyUserInvitationStubInterface
         return $companyUserInvitationSendBatchResponseTransfer;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusResponseTransfer
-     */
     public function updateCompanyUserInvitationStatus(
         CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
     ): CompanyUserInvitationUpdateStatusResponseTransfer {
@@ -120,11 +92,6 @@ class CompanyUserInvitationStub implements CompanyUserInvitationStubInterface
         return $companyUserInvitationUpdateStatusResponseTransfer;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     public function getCompanyUserInvitationByHash(
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
     ): CompanyUserInvitationTransfer {

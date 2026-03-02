@@ -11,15 +11,7 @@ use Generated\Shared\Transfer\CompanyUserInvitationTransfer;
 
 interface InvitationValidatorInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $invitationTransfer
-     *
-     * @return bool
-     */
     public function isValidInvitation(CompanyUserInvitationTransfer $invitationTransfer): bool;
 
-    /**
-     * @return string
-     */
     public function getLastErrorMessage(): string;
 }

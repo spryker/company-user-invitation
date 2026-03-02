@@ -28,10 +28,6 @@ class InvitationDeleter implements InvitationDeleterInterface
      */
     protected $repository;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationEntityManagerInterface $entityManager
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface $repository
-     */
     public function __construct(
         CompanyUserInvitationEntityManagerInterface $entityManager,
         CompanyUserInvitationRepositoryInterface $repository
@@ -40,11 +36,6 @@ class InvitationDeleter implements InvitationDeleterInterface
         $this->repository = $repository;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationDeleteRequestTransfer $companyUserInvitationDeleteRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationDeleteResponseTransfer
-     */
     public function delete(
         CompanyUserInvitationDeleteRequestTransfer $companyUserInvitationDeleteRequestTransfer
     ): CompanyUserInvitationDeleteResponseTransfer {

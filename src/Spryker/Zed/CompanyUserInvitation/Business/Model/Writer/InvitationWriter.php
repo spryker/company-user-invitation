@@ -34,11 +34,6 @@ class InvitationWriter implements InvitationWriterInterface
      */
     protected $invitationHydrator;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationEntityManagerInterface $entityManager
-     * @param \Spryker\Zed\CompanyUserInvitation\Business\Model\Validator\InvitationValidatorInterface $invitationValidator
-     * @param \Spryker\Zed\CompanyUserInvitation\Business\Model\Hydrator\InvitationHydratorInterface $invitationHydrator
-     */
     public function __construct(
         CompanyUserInvitationEntityManagerInterface $entityManager,
         InvitationValidatorInterface $invitationValidator,
@@ -49,11 +44,6 @@ class InvitationWriter implements InvitationWriterInterface
         $this->invitationHydrator = $invitationHydrator;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationCreateRequestTransfer $companyUserInvitationCreateRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCreateResponseTransfer
-     */
     public function create(
         CompanyUserInvitationCreateRequestTransfer $companyUserInvitationCreateRequestTransfer
     ): CompanyUserInvitationCreateResponseTransfer {

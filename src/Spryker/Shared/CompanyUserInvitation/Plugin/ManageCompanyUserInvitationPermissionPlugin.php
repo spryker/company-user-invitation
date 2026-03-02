@@ -19,9 +19,6 @@ class ManageCompanyUserInvitationPermissionPlugin implements PermissionPluginInt
      */
     public const KEY = 'ManageCompanyUserInvitationPermissionPlugin';
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return static::KEY;

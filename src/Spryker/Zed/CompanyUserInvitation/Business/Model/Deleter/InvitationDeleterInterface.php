@@ -12,11 +12,6 @@ use Generated\Shared\Transfer\CompanyUserInvitationDeleteResponseTransfer;
 
 interface InvitationDeleterInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationDeleteRequestTransfer $companyUserInvitationDeleteRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationDeleteResponseTransfer
-     */
     public function delete(
         CompanyUserInvitationDeleteRequestTransfer $companyUserInvitationDeleteRequestTransfer
     ): CompanyUserInvitationDeleteResponseTransfer;

@@ -24,11 +24,6 @@ use Spryker\Zed\PropelOrm\Business\Runtime\ActiveQuery\Criteria;
  */
 class CompanyUserInvitationRepository extends AbstractRepository implements CompanyUserInvitationRepositoryInterface
 {
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationCriteriaFilterTransfer $companyUserInvitationCriteriaFilterTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer
-     */
     public function getCompanyUserInvitationCollection(
         CompanyUserInvitationCriteriaFilterTransfer $companyUserInvitationCriteriaFilterTransfer
     ): CompanyUserInvitationCollectionTransfer {
@@ -68,11 +63,6 @@ class CompanyUserInvitationRepository extends AbstractRepository implements Comp
         return $companyUserInvitationCollectionTransfer;
     }
 
-    /**
-     * @param string $statusKey
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationStatusTransfer|null
-     */
     public function findCompanyUserInvitationStatusByStatusKey(string $statusKey): ?CompanyUserInvitationStatusTransfer
     {
         $spyCompanyUserInvitation = $this->getFactory()
@@ -90,11 +80,6 @@ class CompanyUserInvitationRepository extends AbstractRepository implements Comp
         return null;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer|null
-     */
     public function findCompanyUserInvitationById(
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
     ): ?CompanyUserInvitationTransfer {
@@ -112,11 +97,6 @@ class CompanyUserInvitationRepository extends AbstractRepository implements Comp
         return null;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     public function getCompanyUserInvitationByHash(
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
     ): CompanyUserInvitationTransfer {
@@ -136,12 +116,6 @@ class CompanyUserInvitationRepository extends AbstractRepository implements Comp
             ->mapSpyCompanyUserInvitationToCompanyUserInvitationTransfer($spyCompanyUserInvitation);
     }
 
-    /**
-     * @param \Orm\Zed\CompanyUserInvitation\Persistence\SpyCompanyUserInvitationQuery $queryCompanyUserInvitation
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationCriteriaFilterTransfer $companyUserInvitationCriteriaFilterTransfer
-     *
-     * @return \Orm\Zed\CompanyUserInvitation\Persistence\SpyCompanyUserInvitationQuery
-     */
     protected function applyQueryFilters(
         SpyCompanyUserInvitationQuery $queryCompanyUserInvitation,
         CompanyUserInvitationCriteriaFilterTransfer $companyUserInvitationCriteriaFilterTransfer
@@ -170,12 +144,6 @@ class CompanyUserInvitationRepository extends AbstractRepository implements Comp
         return $queryCompanyUserInvitation;
     }
 
-    /**
-     * @param \Propel\Runtime\ActiveQuery\ModelCriteria $modelCriteria
-     * @param \Generated\Shared\Transfer\FilterTransfer|null $filterTransfer
-     *
-     * @return \Propel\Runtime\ActiveQuery\ModelCriteria
-     */
     public function buildQueryFromCriteria(ModelCriteria $modelCriteria, ?FilterTransfer $filterTransfer = null): ModelCriteria
     {
         $modelCriteria = parent::buildQueryFromCriteria($modelCriteria, $filterTransfer);
@@ -185,12 +153,6 @@ class CompanyUserInvitationRepository extends AbstractRepository implements Comp
         return $modelCriteria;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\PaginationTransfer $paginationTransfer
-     * @param \Propel\Runtime\Util\PropelModelPager $paginationModel
-     *
-     * @return \Generated\Shared\Transfer\PaginationTransfer
-     */
     protected function hydratePaginationTransfer(
         PaginationTransfer $paginationTransfer,
         PropelModelPager $paginationModel

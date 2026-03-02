@@ -35,10 +35,6 @@ class InvitationUpdater implements InvitationUpdaterInterface
      */
     protected $entityManager;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface $repository
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationEntityManagerInterface $entityManager
-     */
     public function __construct(
         CompanyUserInvitationRepositoryInterface $repository,
         CompanyUserInvitationEntityManagerInterface $entityManager
@@ -47,11 +43,6 @@ class InvitationUpdater implements InvitationUpdaterInterface
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusResponseTransfer
-     */
     public function updateStatus(
         CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
     ): CompanyUserInvitationUpdateStatusResponseTransfer {
@@ -83,11 +74,6 @@ class InvitationUpdater implements InvitationUpdaterInterface
         return $companyUserInvitationUpdateStatusResponseTransfer;
     }
 
-    /**
-     * @param string $statusKey
-     *
-     * @return int
-     */
     protected function getIdCompanyUserInvitationStatus(string $statusKey): int
     {
         if (!isset($this->invitationStatusCache[$statusKey])) {
@@ -99,11 +85,6 @@ class InvitationUpdater implements InvitationUpdaterInterface
         return $this->invitationStatusCache[$statusKey];
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return void
-     */
     protected function anonymize(CompanyUserInvitationTransfer $companyUserInvitationTransfer): void
     {
         $companyUserInvitationTransfer->setEmail($this->generateRandomEmail());

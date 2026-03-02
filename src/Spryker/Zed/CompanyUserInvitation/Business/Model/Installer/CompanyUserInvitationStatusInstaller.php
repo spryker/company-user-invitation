@@ -29,11 +29,6 @@ class CompanyUserInvitationStatusInstaller implements CompanyUserInvitationStatu
      */
     protected $config;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface $repository
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationEntityManagerInterface $entityManager
-     * @param \Spryker\Zed\CompanyUserInvitation\CompanyUserInvitationConfig $config
-     */
     public function __construct(
         CompanyUserInvitationRepositoryInterface $repository,
         CompanyUserInvitationEntityManagerInterface $entityManager,
@@ -44,9 +39,6 @@ class CompanyUserInvitationStatusInstaller implements CompanyUserInvitationStatu
         $this->config = $config;
     }
 
-    /**
-     * @return void
-     */
     public function install(): void
     {
         foreach ($this->config->getCompanyUserInvitationStatusKeys() as $statusKey) {

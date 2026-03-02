@@ -9,8 +9,5 @@ namespace Spryker\Zed\CompanyUserInvitation\Business\Model\Installer;
 
 interface CompanyUserInvitationStatusInstallerInterface
 {
-    /**
-     * @return void
-     */
     public function install(): void;
 }

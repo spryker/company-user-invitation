@@ -33,11 +33,6 @@ class CompanyUserCreator implements CompanyUserCreatorInterface
      */
     protected $invitationUpdater;
 
-    /**
-     * @param \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface $repository
-     * @param \Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade
-     * @param \Spryker\Zed\CompanyUserInvitation\Business\Model\Updater\InvitationUpdaterInterface $invitationUpdater
-     */
     public function __construct(
         CompanyUserInvitationRepositoryInterface $repository,
         CompanyUserInvitationToCompanyUserFacadeInterface $companyUserFacade,
@@ -48,11 +43,6 @@ class CompanyUserCreator implements CompanyUserCreatorInterface
         $this->invitationUpdater = $invitationUpdater;
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
-     *
-     * @return void
-     */
     public function create(CustomerTransfer $customerTransfer): void
     {
         $companyUserInvitationTransfer = $this->getCompanyUserInvitationTransfer($customerTransfer);
@@ -77,11 +67,6 @@ class CompanyUserCreator implements CompanyUserCreatorInterface
         }
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationUpdateStatusRequestTransfer
-     */
     protected function getCompanyUserInvitationUpdateStatusRequestTransfer(
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
     ): CompanyUserInvitationUpdateStatusRequestTransfer {
@@ -91,11 +76,6 @@ class CompanyUserCreator implements CompanyUserCreatorInterface
         ->setStatusKey(CompanyUserInvitationConfig::INVITATION_STATUS_ACCEPTED);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
-     *
-     * @return \Generated\Shared\Transfer\CompanyUserInvitationTransfer
-     */
     protected function getCompanyUserInvitationTransfer(CustomerTransfer $customerTransfer): CompanyUserInvitationTransfer
     {
         $companyUserInvitationTransfer = (new CompanyUserInvitationTransfer())
@@ -104,11 +84,6 @@ class CompanyUserCreator implements CompanyUserCreatorInterface
         return $this->repository->getCompanyUserInvitationByHash($companyUserInvitationTransfer);
     }
 
-    /**
-     * @param \Generated\Shared\Transfer\CompanyUserInvitationTransfer $companyUserInvitationTransfer
-     *
-     * @return bool
-     */
     protected function isValidCompanyUserInvitationStatus(CompanyUserInvitationTransfer $companyUserInvitationTransfer): bool
     {
         return $companyUserInvitationTransfer->getIdCompanyUserInvitation()
