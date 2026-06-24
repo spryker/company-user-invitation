@@ -18,6 +18,8 @@ use Spryker\Shared\PermissionExtension\Dependency\Plugin\PermissionPluginInterfa
 class ManageCompanyUserInvitationPermissionPlugin extends AbstractPlugin implements PermissionPluginInterface
 {
     /**
+     * @api
+     *
      * @var string
      */
     public const KEY = 'ManageCompanyUserInvitationPermissionPlugin';
