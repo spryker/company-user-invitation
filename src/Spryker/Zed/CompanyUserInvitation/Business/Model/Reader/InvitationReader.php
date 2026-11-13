@@ -47,9 +47,10 @@ class InvitationReader implements InvitationReaderInterface
         return $this->repository->getCompanyUserInvitationByHash($companyUserInvitationTransfer);
     }
 
-    public function findCompanyUserInvitationById(
-        CompanyUserInvitationTransfer $companyUserInvitationTransfer
+    public function findCompanyUserInvitationByIdAndIdCompanyUser(
+        CompanyUserInvitationTransfer $companyUserInvitationTransfer,
+        int $idCompanyUser
     ): ?CompanyUserInvitationTransfer {
-        return $this->repository->findCompanyUserInvitationById($companyUserInvitationTransfer);
+        return $this->repository->findCompanyUserInvitationByIdAndIdCompanyUser($companyUserInvitationTransfer, $idCompanyUser);
     }
 }

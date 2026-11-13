@@ -7,11 +7,14 @@
 
 namespace Spryker\Zed\CompanyUserInvitation\Business\Model\Validator;
 
+use Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer;
 use Generated\Shared\Transfer\CompanyUserInvitationTransfer;
 
 interface InvitationValidatorInterface
 {
     public function isValidInvitation(CompanyUserInvitationTransfer $invitationTransfer): bool;
+
+    public function preloadExistingEmails(CompanyUserInvitationCollectionTransfer $companyUserInvitationCollectionTransfer): void;
 
     public function getLastErrorMessage(): string;
 }

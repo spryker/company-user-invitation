@@ -22,9 +22,17 @@ interface CompanyUserInvitationRepositoryInterface
         string $statusKey
     ): ?CompanyUserInvitationStatusTransfer;
 
-    public function findCompanyUserInvitationById(
-        CompanyUserInvitationTransfer $companyUserInvitationTransfer
+    public function findCompanyUserInvitationByIdAndIdCompanyUser(
+        CompanyUserInvitationTransfer $companyUserInvitationTransfer,
+        int $idCompanyUser
     ): ?CompanyUserInvitationTransfer;
+
+    /**
+     * @param list<string> $emails
+     *
+     * @return list<string>
+     */
+    public function getCompanyUserInvitationEmailsByEmails(array $emails): array;
 
     public function getCompanyUserInvitationByHash(
         CompanyUserInvitationTransfer $companyUserInvitationTransfer

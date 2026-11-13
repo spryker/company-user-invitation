@@ -21,7 +21,8 @@ interface InvitationReaderInterface
         CompanyUserInvitationTransfer $companyUserInvitationTransfer
     ): CompanyUserInvitationTransfer;
 
-    public function findCompanyUserInvitationById(
-        CompanyUserInvitationTransfer $companyUserInvitationTransfer
+    public function findCompanyUserInvitationByIdAndIdCompanyUser(
+        CompanyUserInvitationTransfer $companyUserInvitationTransfer,
+        int $idCompanyUser
     ): ?CompanyUserInvitationTransfer;
 }

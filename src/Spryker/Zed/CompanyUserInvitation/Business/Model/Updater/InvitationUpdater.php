@@ -47,13 +47,16 @@ class InvitationUpdater implements InvitationUpdaterInterface
         CompanyUserInvitationUpdateStatusRequestTransfer $companyUserInvitationUpdateStatusRequestTransfer
     ): CompanyUserInvitationUpdateStatusResponseTransfer {
         $companyUserInvitationTransfer = $companyUserInvitationUpdateStatusRequestTransfer->getCompanyUserInvitation();
+        $idCompanyUser = $companyUserInvitationUpdateStatusRequestTransfer->getIdCompanyUser();
         $companyUserInvitationUpdateStatusResponseTransfer = (new CompanyUserInvitationUpdateStatusResponseTransfer())
             ->setCompanyUserInvitation($companyUserInvitationTransfer)
             ->setIsSuccess(false);
 
         if (
-            !$this->can(ManageCompanyUserInvitationPermissionPlugin::KEY, $companyUserInvitationUpdateStatusRequestTransfer->getIdCompanyUser())
-            || !$this->repository->findCompanyUserInvitationById($companyUserInvitationTransfer)
+            $companyUserInvitationTransfer === null
+            || $idCompanyUser === null
+            || !$this->can(ManageCompanyUserInvitationPermissionPlugin::KEY, $idCompanyUser)
+            || !$this->repository->findCompanyUserInvitationByIdAndIdCompanyUser($companyUserInvitationTransfer, $idCompanyUser)
         ) {
             return $companyUserInvitationUpdateStatusResponseTransfer;
         }

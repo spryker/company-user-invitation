@@ -8,7 +8,7 @@
 namespace Spryker\Zed\CompanyUserInvitation\Business\Model\Validator;
 
 use Generated\Shared\Transfer\CompanyBusinessUnitCriteriaFilterTransfer;
-use Generated\Shared\Transfer\CompanyUserInvitationCriteriaFilterTransfer;
+use Generated\Shared\Transfer\CompanyUserInvitationCollectionTransfer;
 use Generated\Shared\Transfer\CompanyUserInvitationTransfer;
 use Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyBusinessUnitFacadeInterface;
 use Spryker\Zed\CompanyUserInvitation\Dependency\Facade\CompanyUserInvitationToCompanyUserFacadeInterface;
@@ -16,6 +16,10 @@ use Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositor
 
 class InvitationValidator implements InvitationValidatorInterface
 {
+    protected const int FIRST_NAME_MAX_LENGTH = 100;
+
+    protected const int LAST_NAME_MAX_LENGTH = 100;
+
     /**
      * @var string
      */
@@ -30,6 +34,11 @@ class InvitationValidator implements InvitationValidatorInterface
      * @var array
      */
     protected $emailCache = [];
+
+    /**
+     * @var array<string, bool>
+     */
+    protected array $existingEmailCache = [];
 
     /**
      * @var \Spryker\Zed\CompanyUserInvitation\Persistence\CompanyUserInvitationRepositoryInterface
@@ -64,6 +73,21 @@ class InvitationValidator implements InvitationValidatorInterface
             && $this->isValidEmail($invitationTransfer);
     }
 
+    public function preloadExistingEmails(CompanyUserInvitationCollectionTransfer $companyUserInvitationCollectionTransfer): void
+    {
+        $normalizedEmails = [];
+
+        foreach ($companyUserInvitationCollectionTransfer->getCompanyUserInvitations() as $companyUserInvitationTransfer) {
+            if ($companyUserInvitationTransfer->getEmail() === null) {
+                continue;
+            }
+
+            $normalizedEmails[mb_strtolower($companyUserInvitationTransfer->getEmail())] = true;
+        }
+
+        $this->loadExistingEmails(array_keys($normalizedEmails));
+    }
+
     public function getLastErrorMessage(): string
     {
         return $this->errorMessage;
@@ -77,6 +101,12 @@ class InvitationValidator implements InvitationValidatorInterface
             return false;
         }
 
+        if (mb_strlen($invitationTransfer->getFirstNameOrFail()) > static::FIRST_NAME_MAX_LENGTH) {
+            $this->errorMessage = sprintf('First name cannot be longer than %d characters', static::FIRST_NAME_MAX_LENGTH);
+
+            return false;
+        }
+
         return true;
     }
 
@@ -84,6 +114,12 @@ class InvitationValidator implements InvitationValidatorInterface
     {
         if (!trim($invitationTransfer->getLastName())) {
             $this->errorMessage = sprintf('Last name cannot be blank');
+
+            return false;
+        }
+
+        if (mb_strlen($invitationTransfer->getLastNameOrFail()) > static::LAST_NAME_MAX_LENGTH) {
+            $this->errorMessage = sprintf('Last name cannot be longer than %d characters', static::LAST_NAME_MAX_LENGTH);
 
             return false;
         }
@@ -111,25 +147,54 @@ class InvitationValidator implements InvitationValidatorInterface
 
     protected function isValidEmail(CompanyUserInvitationTransfer $invitationTransfer): bool
     {
-        if (!$this->emailCache) {
-            $this->populateEmailCache();
-        }
-
         if (!filter_var($invitationTransfer->getEmail(), FILTER_VALIDATE_EMAIL)) {
             $this->errorMessage = sprintf('Email "%s" is not valid', $invitationTransfer->getEmail());
 
             return false;
         }
 
-        if (in_array($invitationTransfer->getEmail(), $this->emailCache)) {
+        $normalizedEmail = mb_strtolower($invitationTransfer->getEmailOrFail());
+        $this->loadExistingEmails([$normalizedEmail]);
+
+        if (
+            in_array($normalizedEmail, $this->emailCache, true)
+            || $this->existingEmailCache[$normalizedEmail]
+        ) {
             $this->errorMessage = sprintf('Invitation for %s is already imported', $invitationTransfer->getEmail());
 
             return false;
         }
 
-        $this->emailCache[] = $invitationTransfer->getEmail();
+        $this->emailCache[] = $normalizedEmail;
 
         return true;
+    }
+
+    /**
+     * @param list<string> $normalizedEmails
+     *
+     * @return void
+     */
+    protected function loadExistingEmails(array $normalizedEmails): void
+    {
+        $emailsToLoad = [];
+
+        foreach ($normalizedEmails as $normalizedEmail) {
+            if (!isset($this->existingEmailCache[$normalizedEmail])) {
+                $this->existingEmailCache[$normalizedEmail] = false;
+                $emailsToLoad[] = $normalizedEmail;
+            }
+        }
+
+        if (!$emailsToLoad) {
+            return;
+        }
+
+        $existingEmails = $this->repository->getCompanyUserInvitationEmailsByEmails($emailsToLoad);
+
+        foreach ($existingEmails as $existingEmail) {
+            $this->existingEmailCache[mb_strtolower($existingEmail)] = true;
+        }
     }
 
     /**
@@ -150,22 +215,6 @@ class InvitationValidator implements InvitationValidatorInterface
 
         foreach ($companyBusinessUnitCollectionTransfer->getCompanyBusinessUnits() as $companyBusinessUnitTransfer) {
             $this->businessUnitNameCache[] = $companyBusinessUnitTransfer->getName();
-        }
-    }
-
-    /**
-     * @return void
-     */
-    protected function populateEmailCache()
-    {
-        $companyUserInvitationCriteriaFilterTransfer = (new CompanyUserInvitationCriteriaFilterTransfer());
-
-        $companyUserInvitationCollection = $this->repository->getCompanyUserInvitationCollection(
-            $companyUserInvitationCriteriaFilterTransfer,
-        );
-
-        foreach ($companyUserInvitationCollection->getCompanyUserInvitations() as $companyUserInvitationTransfer) {
-            $this->emailCache[] = $companyUserInvitationTransfer->getEmail();
         }
     }
 }

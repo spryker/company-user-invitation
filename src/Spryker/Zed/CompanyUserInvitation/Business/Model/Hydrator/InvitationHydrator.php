@@ -72,7 +72,7 @@ class InvitationHydrator implements InvitationHydratorInterface
     protected function generateHash(CompanyUserInvitationTransfer $invitationTransfer): string
     {
         return $this->utilTextService->hashValue(
-            sprintf('%s.%s', $invitationTransfer->getEmail(), microtime(true)),
+            random_bytes(32),
             Hash::SHA256,
         );
     }

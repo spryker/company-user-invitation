@@ -40,13 +40,16 @@ class InvitationDeleter implements InvitationDeleterInterface
         CompanyUserInvitationDeleteRequestTransfer $companyUserInvitationDeleteRequestTransfer
     ): CompanyUserInvitationDeleteResponseTransfer {
         $companyUserInvitationTransfer = $companyUserInvitationDeleteRequestTransfer->getCompanyUserInvitation();
+        $idCompanyUser = $companyUserInvitationDeleteRequestTransfer->getIdCompanyUser();
         $companyUserInvitationDeleteResponseTransfer = (new CompanyUserInvitationDeleteResponseTransfer())
             ->setCompanyUserInvitation($companyUserInvitationTransfer)
             ->setIsSuccess(false);
 
         if (
-            !$this->can(ManageCompanyUserInvitationPermissionPlugin::KEY, $companyUserInvitationDeleteRequestTransfer->getIdCompanyUser())
-                || !$this->repository->findCompanyUserInvitationById($companyUserInvitationTransfer)
+            $companyUserInvitationTransfer === null
+            || $idCompanyUser === null
+            || !$this->can(ManageCompanyUserInvitationPermissionPlugin::KEY, $idCompanyUser)
+            || !$this->repository->findCompanyUserInvitationByIdAndIdCompanyUser($companyUserInvitationTransfer, $idCompanyUser)
         ) {
             return $companyUserInvitationDeleteResponseTransfer;
         }

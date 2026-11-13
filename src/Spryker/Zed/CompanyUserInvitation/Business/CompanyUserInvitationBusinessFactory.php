@@ -16,7 +16,9 @@ use Spryker\Zed\CompanyUserInvitation\Business\Model\Reader\InvitationReader;
 use Spryker\Zed\CompanyUserInvitation\Business\Model\Sender\InvitationSender;
 use Spryker\Zed\CompanyUserInvitation\Business\Model\Updater\InvitationUpdater;
 use Spryker\Zed\CompanyUserInvitation\Business\Model\Validator\InvitationValidator;
+use Spryker\Zed\CompanyUserInvitation\Business\Model\Validator\InvitationValidatorInterface;
 use Spryker\Zed\CompanyUserInvitation\Business\Model\Writer\InvitationWriter;
+use Spryker\Zed\CompanyUserInvitation\Business\Model\Writer\InvitationWriterInterface;
 use Spryker\Zed\CompanyUserInvitation\CompanyUserInvitationDependencyProvider;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 
@@ -42,8 +44,11 @@ class CompanyUserInvitationBusinessFactory extends AbstractBusinessFactory
      */
     public function createInvitationImporter()
     {
+        $invitationValidator = $this->createInvitationValidator();
+
         return new InvitationImporter(
-            $this->createInvitationWriter(),
+            $this->createInvitationWriterWithValidator($invitationValidator),
+            $invitationValidator,
         );
     }
 
@@ -52,9 +57,14 @@ class CompanyUserInvitationBusinessFactory extends AbstractBusinessFactory
      */
     public function createInvitationWriter()
     {
+        return $this->createInvitationWriterWithValidator($this->createInvitationValidator());
+    }
+
+    public function createInvitationWriterWithValidator(InvitationValidatorInterface $invitationValidator): InvitationWriterInterface
+    {
         return new InvitationWriter(
             $this->getEntityManager(),
-            $this->createInvitationValidator(),
+            $invitationValidator,
             $this->createInvitationHydrator(),
         );
     }

@@ -13,6 +13,9 @@ use Generated\Shared\Transfer\CompanyUserInvitationStatusTransfer;
 use Generated\Shared\Transfer\CompanyUserInvitationTransfer;
 use Generated\Shared\Transfer\FilterTransfer;
 use Generated\Shared\Transfer\PaginationTransfer;
+use Orm\Zed\CompanyBusinessUnit\Persistence\Map\SpyCompanyBusinessUnitTableMap;
+use Orm\Zed\CompanyUser\Persistence\Map\SpyCompanyUserTableMap;
+use Orm\Zed\CompanyUserInvitation\Persistence\Map\SpyCompanyUserInvitationTableMap;
 use Orm\Zed\CompanyUserInvitation\Persistence\SpyCompanyUserInvitationQuery;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\Util\PropelModelPager;
@@ -80,21 +83,49 @@ class CompanyUserInvitationRepository extends AbstractRepository implements Comp
         return null;
     }
 
-    public function findCompanyUserInvitationById(
-        CompanyUserInvitationTransfer $companyUserInvitationTransfer
+    /**
+     * @module CompanyBusinessUnit
+     * @module CompanyUser
+     */
+    public function findCompanyUserInvitationByIdAndIdCompanyUser(
+        CompanyUserInvitationTransfer $companyUserInvitationTransfer,
+        int $idCompanyUser
     ): ?CompanyUserInvitationTransfer {
         $spyCompanyUserInvitation = $this->getFactory()
             ->createCompanyUserInvitationQuery()
             ->filterByIdCompanyUserInvitation($companyUserInvitationTransfer->getIdCompanyUserInvitation())
+            ->joinSpyCompanyBusinessUnit()
+            ->addJoin(SpyCompanyBusinessUnitTableMap::COL_FK_COMPANY, SpyCompanyUserTableMap::COL_FK_COMPANY, Criteria::INNER_JOIN)
+            ->add(SpyCompanyUserTableMap::COL_ID_COMPANY_USER, $idCompanyUser)
             ->findOne();
 
-        if ($spyCompanyUserInvitation !== null) {
-            return $this->getFactory()
-                ->createCompanyUserInvitationMapper()
-                ->mapSpyCompanyUserInvitationToCompanyUserInvitationTransfer($spyCompanyUserInvitation);
+        if ($spyCompanyUserInvitation === null) {
+            return null;
         }
 
-        return null;
+        return $this->getFactory()
+            ->createCompanyUserInvitationMapper()
+            ->mapSpyCompanyUserInvitationToCompanyUserInvitationTransfer($spyCompanyUserInvitation);
+    }
+
+    /**
+     * @param list<string> $emails
+     *
+     * @return list<string>
+     */
+    public function getCompanyUserInvitationEmailsByEmails(array $emails): array
+    {
+        if (!$emails) {
+            return [];
+        }
+
+        /** @var list<string> */
+        return $this->getFactory()
+            ->createCompanyUserInvitationQuery()
+            ->addUsingAlias(SpyCompanyUserInvitationTableMap::COL_EMAIL, $emails, Criteria::IN)
+            ->select(SpyCompanyUserInvitationTableMap::COL_EMAIL)
+            ->find()
+            ->getData();
     }
 
     public function getCompanyUserInvitationByHash(

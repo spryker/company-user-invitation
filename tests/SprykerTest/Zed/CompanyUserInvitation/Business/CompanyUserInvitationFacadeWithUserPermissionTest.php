@@ -218,6 +218,122 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
         $this->assertTrue($companyUserInvitationCreateResponseTransfer->getIsSuccess());
     }
 
+    public function testCreateCompanyUserInvitationShouldFailWhenFirstNameIsTooLong(): void
+    {
+        // Arrange
+        $companyUserInvitationCreateRequestTransfer = (new CompanyUserInvitationCreateRequestTransfer())
+            ->setIdCompanyUser($this->companyUserTransfer->getIdCompanyUser())
+            ->setCompanyUserInvitation($this->createCompanyUserInvitationTransfer([
+                CompanyUserInvitationTransfer::FIRST_NAME => str_repeat('a', 101),
+            ]));
+
+        // Act
+        $companyUserInvitationCreateResponseTransfer = $this->getFacade()
+            ->createCompanyUserInvitation($companyUserInvitationCreateRequestTransfer);
+
+        // Assert
+        $this->assertFalse($companyUserInvitationCreateResponseTransfer->getIsSuccess());
+        $this->assertSame('First name cannot be longer than 100 characters', $companyUserInvitationCreateResponseTransfer->getError());
+    }
+
+    public function testCreateCompanyUserInvitationShouldFailWhenLastNameIsTooLong(): void
+    {
+        // Arrange
+        $companyUserInvitationCreateRequestTransfer = (new CompanyUserInvitationCreateRequestTransfer())
+            ->setIdCompanyUser($this->companyUserTransfer->getIdCompanyUser())
+            ->setCompanyUserInvitation($this->createCompanyUserInvitationTransfer([
+                CompanyUserInvitationTransfer::LAST_NAME => str_repeat('a', 101),
+            ]));
+
+        // Act
+        $companyUserInvitationCreateResponseTransfer = $this->getFacade()
+            ->createCompanyUserInvitation($companyUserInvitationCreateRequestTransfer);
+
+        // Assert
+        $this->assertFalse($companyUserInvitationCreateResponseTransfer->getIsSuccess());
+        $this->assertSame('Last name cannot be longer than 100 characters', $companyUserInvitationCreateResponseTransfer->getError());
+    }
+
+    public function testCreateCompanyUserInvitationShouldSucceedWhenNamesHaveMaximumLength(): void
+    {
+        // Arrange
+        $companyUserInvitationCreateRequestTransfer = (new CompanyUserInvitationCreateRequestTransfer())
+            ->setIdCompanyUser($this->companyUserTransfer->getIdCompanyUser())
+            ->setCompanyUserInvitation($this->createCompanyUserInvitationTransfer([
+                CompanyUserInvitationTransfer::FIRST_NAME => str_repeat('ä', 100),
+                CompanyUserInvitationTransfer::LAST_NAME => str_repeat('ä', 100),
+            ]));
+
+        // Act
+        $companyUserInvitationCreateResponseTransfer = $this->getFacade()
+            ->createCompanyUserInvitation($companyUserInvitationCreateRequestTransfer);
+
+        // Assert
+        $this->assertTrue($companyUserInvitationCreateResponseTransfer->getIsSuccess());
+    }
+
+    public function testCreateCompanyUserInvitationShouldFailWhenEmailIsAlreadyInvitedInAnotherLetterCase(): void
+    {
+        // Arrange
+        $companyUserInvitationTransfer = $this->haveCompanyUserInvitation();
+        $companyUserInvitationCreateRequestTransfer = (new CompanyUserInvitationCreateRequestTransfer())
+            ->setIdCompanyUser($this->companyUserTransfer->getIdCompanyUser())
+            ->setCompanyUserInvitation($this->createCompanyUserInvitationTransfer([
+                CompanyUserInvitationTransfer::EMAIL => strtoupper($companyUserInvitationTransfer->getEmail()),
+            ]));
+
+        // Act
+        $companyUserInvitationCreateResponseTransfer = $this->getFacade()
+            ->createCompanyUserInvitation($companyUserInvitationCreateRequestTransfer);
+
+        // Assert
+        $this->assertFalse($companyUserInvitationCreateResponseTransfer->getIsSuccess());
+        $this->assertStringContainsString('is already imported', $companyUserInvitationCreateResponseTransfer->getError());
+    }
+
+    public function testImportCompanyUserInvitationsShouldReturnErrorForDuplicateEmailInSameFile(): void
+    {
+        // Arrange
+        $email = $this->createCompanyUserInvitationTransfer()->getEmail();
+        $companyUserInvitationCollectionTransfer = (new CompanyUserInvitationCollectionTransfer())
+            ->addCompanyUserInvitation($this->createCompanyUserInvitationTransfer([CompanyUserInvitationTransfer::EMAIL => $email]))
+            ->addCompanyUserInvitation($this->createCompanyUserInvitationTransfer([CompanyUserInvitationTransfer::EMAIL => strtoupper($email)]));
+        $companyUserInvitationImportRequestTransfer = (new CompanyUserInvitationImportRequestTransfer())
+            ->setIdCompanyUser($this->companyUserTransfer->getIdCompanyUser())
+            ->setCompanyUserInvitationCollection($companyUserInvitationCollectionTransfer);
+
+        // Act
+        $companyUserInvitationImportResponseTransfer = $this->getFacade()
+            ->importCompanyUserInvitations($companyUserInvitationImportRequestTransfer);
+
+        // Assert
+        $this->assertCount(1, $companyUserInvitationImportResponseTransfer->getErrors());
+        $this->assertStringContainsString('is already imported', $companyUserInvitationImportResponseTransfer->getErrors()[0]);
+    }
+
+    public function testImportCompanyUserInvitationsShouldReturnErrorWhenEmailIsInvitedByAnotherCompany(): void
+    {
+        // Arrange
+        $anotherCompanyBusinessUnitTransfer = $this->haveCompanyBusinessUnitOfAnotherCompany();
+        $companyUserInvitationTransfer = $this->tester->haveCompanyUserInvitation([
+            CompanyUserInvitationTransfer::FK_COMPANY_USER => $this->haveCompanyUserOfAnotherCompany($anotherCompanyBusinessUnitTransfer)->getIdCompanyUser(),
+            CompanyUserInvitationTransfer::COMPANY_BUSINESS_UNIT_NAME => $anotherCompanyBusinessUnitTransfer->getName(),
+        ]);
+        $companyUserInvitationImportRequestTransfer = (new CompanyUserInvitationImportRequestTransfer())
+            ->setIdCompanyUser($this->companyUserTransfer->getIdCompanyUser())
+            ->setCompanyUserInvitationCollection((new CompanyUserInvitationCollectionTransfer())->addCompanyUserInvitation(
+                $this->createCompanyUserInvitationTransfer([CompanyUserInvitationTransfer::EMAIL => $companyUserInvitationTransfer->getEmail()]),
+            ));
+
+        // Act
+        $companyUserInvitationImportResponseTransfer = $this->getFacade()
+            ->importCompanyUserInvitations($companyUserInvitationImportRequestTransfer);
+
+        // Assert
+        $this->assertCount(1, $companyUserInvitationImportResponseTransfer->getErrors());
+        $this->assertStringContainsString('is already imported', $companyUserInvitationImportResponseTransfer->getErrors()[0]);
+    }
+
     public function testDeleteCompanyUserInvitationShouldReturnSuccess(): void
     {
         $companyUserInvitationDeleteRequestTransfer = (new CompanyUserInvitationDeleteRequestTransfer())
@@ -228,6 +344,95 @@ class CompanyUserInvitationFacadeWithUserPermissionTest extends Unit
             ->deleteCompanyUserInvitation($companyUserInvitationDeleteRequestTransfer);
 
         $this->assertTrue($companyUserInvitationDeleteResponseTransfer->getIsSuccess());
+    }
+
+    public function testSendCompanyUserInvitationShouldFailForInvitationOfAnotherCompany(): void
+    {
+        // Arrange
+        $companyUserInvitationTransfer = $this->haveCompanyUserInvitation();
+        $companyUserInvitationSendRequestTransfer = (new CompanyUserInvitationSendRequestTransfer())
+            ->setIdCompanyUser($this->haveCompanyUserOfAnotherCompany()->getIdCompanyUser())
+            ->setCompanyUserInvitation($companyUserInvitationTransfer);
+
+        // Act
+        $companyUserInvitationSendResponseTransfer = $this->getFacade()
+            ->sendCompanyUserInvitation($companyUserInvitationSendRequestTransfer);
+
+        // Assert
+        $this->assertFalse($companyUserInvitationSendResponseTransfer->getIsSuccess());
+        $this->assertCompanyUserInvitationIsUnchanged($companyUserInvitationTransfer);
+    }
+
+    public function testUpdateCompanyUserInvitationStatusShouldFailForInvitationOfAnotherCompany(): void
+    {
+        // Arrange
+        $companyUserInvitationTransfer = $this->haveCompanyUserInvitation();
+        $companyUserInvitationUpdateStatusRequestTransfer = (new CompanyUserInvitationUpdateStatusRequestTransfer())
+            ->setIdCompanyUser($this->haveCompanyUserOfAnotherCompany()->getIdCompanyUser())
+            ->setStatusKey(CompanyUserInvitationConfig::INVITATION_STATUS_DELETED)
+            ->setCompanyUserInvitation($companyUserInvitationTransfer);
+
+        // Act
+        $companyUserInvitationUpdateStatusResponseTransfer = $this->getFacade()
+            ->updateCompanyUserInvitationStatus($companyUserInvitationUpdateStatusRequestTransfer);
+
+        // Assert
+        $this->assertFalse($companyUserInvitationUpdateStatusResponseTransfer->getIsSuccess());
+        $this->assertCompanyUserInvitationIsUnchanged($companyUserInvitationTransfer);
+    }
+
+    public function testDeleteCompanyUserInvitationShouldFailForInvitationOfAnotherCompany(): void
+    {
+        // Arrange
+        $companyUserInvitationTransfer = $this->haveCompanyUserInvitation();
+        $companyUserInvitationDeleteRequestTransfer = (new CompanyUserInvitationDeleteRequestTransfer())
+            ->setIdCompanyUser($this->haveCompanyUserOfAnotherCompany()->getIdCompanyUser())
+            ->setCompanyUserInvitation($companyUserInvitationTransfer);
+
+        // Act
+        $companyUserInvitationDeleteResponseTransfer = $this->getFacade()
+            ->deleteCompanyUserInvitation($companyUserInvitationDeleteRequestTransfer);
+
+        // Assert
+        $this->assertFalse($companyUserInvitationDeleteResponseTransfer->getIsSuccess());
+        $this->assertCompanyUserInvitationIsUnchanged($companyUserInvitationTransfer);
+    }
+
+    protected function assertCompanyUserInvitationIsUnchanged(CompanyUserInvitationTransfer $companyUserInvitationTransfer): void
+    {
+        $persistedCompanyUserInvitationTransfer = $this->getFacade()->getCompanyUserInvitationByHash(
+            (new CompanyUserInvitationTransfer())->setHash($companyUserInvitationTransfer->getHash()),
+        );
+
+        $this->assertSame($companyUserInvitationTransfer->getIdCompanyUserInvitation(), $persistedCompanyUserInvitationTransfer->getIdCompanyUserInvitation());
+        $this->assertSame($companyUserInvitationTransfer->getEmail(), $persistedCompanyUserInvitationTransfer->getEmail());
+        $this->assertSame($companyUserInvitationTransfer->getFkCompanyUserInvitationStatus(), $persistedCompanyUserInvitationTransfer->getFkCompanyUserInvitationStatus());
+    }
+
+    protected function haveCompanyBusinessUnitOfAnotherCompany(): CompanyBusinessUnitTransfer
+    {
+        return $this->tester->haveCompanyBusinessUnit([
+            CompanyBusinessUnitTransfer::FK_COMPANY => $this->tester->haveCompany()->getIdCompany(),
+        ]);
+    }
+
+    protected function haveCompanyUserOfAnotherCompany(?CompanyBusinessUnitTransfer $companyBusinessUnitTransfer = null): CompanyUserTransfer
+    {
+        $companyBusinessUnitTransfer ??= $this->haveCompanyBusinessUnitOfAnotherCompany();
+        $companyUserTransfer = $this->tester->haveCompanyUser([
+            CompanyUserTransfer::FK_COMPANY_BUSINESS_UNIT => $companyBusinessUnitTransfer->getIdCompanyBusinessUnit(),
+            CompanyUserTransfer::FK_COMPANY => $companyBusinessUnitTransfer->getFkCompany(),
+            CompanyUserTransfer::CUSTOMER => $this->tester->haveCustomer(),
+        ]);
+
+        $companyRoleTransfer = $this->tester->haveCompanyRole([
+            CompanyRoleTransfer::FK_COMPANY => $companyBusinessUnitTransfer->getFkCompany(),
+            CompanyRoleTransfer::PERMISSION_COLLECTION => $this->permissionCollectionTransfer,
+        ]);
+        $companyUserTransfer->setCompanyRoleCollection((new CompanyRoleCollectionBuilder())->build()->addRole($companyRoleTransfer));
+        $this->tester->assignCompanyRolesToCompanyUser($companyUserTransfer);
+
+        return $companyUserTransfer;
     }
 
     protected function createCompanyUserInvitationTransfer(array $seedData = []): CompanyUserInvitationTransfer

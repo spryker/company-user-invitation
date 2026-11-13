@@ -10,6 +10,7 @@ namespace Spryker\Zed\CompanyUserInvitation\Business\Model\Importer;
 use Generated\Shared\Transfer\CompanyUserInvitationCreateRequestTransfer;
 use Generated\Shared\Transfer\CompanyUserInvitationImportRequestTransfer;
 use Generated\Shared\Transfer\CompanyUserInvitationImportResponseTransfer;
+use Spryker\Zed\CompanyUserInvitation\Business\Model\Validator\InvitationValidatorInterface;
 use Spryker\Zed\CompanyUserInvitation\Business\Model\Writer\InvitationWriterInterface;
 use Spryker\Zed\CompanyUserInvitation\Communication\Plugin\Permission\ManageCompanyUserInvitationPermissionPlugin;
 use Spryker\Zed\Kernel\PermissionAwareTrait;
@@ -23,9 +24,14 @@ class InvitationImporter implements InvitationImporterInterface
      */
     protected $invitationWriter;
 
-    public function __construct(InvitationWriterInterface $invitationWriter)
-    {
+    protected InvitationValidatorInterface $invitationValidator;
+
+    public function __construct(
+        InvitationWriterInterface $invitationWriter,
+        InvitationValidatorInterface $invitationValidator
+    ) {
         $this->invitationWriter = $invitationWriter;
+        $this->invitationValidator = $invitationValidator;
     }
 
     public function importCompanyUserInvitations(
@@ -37,7 +43,8 @@ class InvitationImporter implements InvitationImporterInterface
             return $companyUserInvitationImportResponseTransfer;
         }
 
-        $companyUserInvitationCollection = $companyUserInvitationImportRequestTransfer->getCompanyUserInvitationCollection();
+        $companyUserInvitationCollection = $companyUserInvitationImportRequestTransfer->getCompanyUserInvitationCollectionOrFail();
+        $this->invitationValidator->preloadExistingEmails($companyUserInvitationCollection);
 
         $invitationCounter = 1;
         foreach ($companyUserInvitationCollection->getCompanyUserInvitations() as $companyUserInvitationTransfer) {

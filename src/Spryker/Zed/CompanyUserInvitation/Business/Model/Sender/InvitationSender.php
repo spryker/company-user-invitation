@@ -56,13 +56,20 @@ class InvitationSender implements InvitationSenderInterface
         CompanyUserInvitationSendRequestTransfer $companyUserInvitationSendRequestTransfer
     ): CompanyUserInvitationSendResponseTransfer {
         $companyUserInvitationSendResponseTransfer = (new CompanyUserInvitationSendResponseTransfer())->setIsSuccess(false);
+        $requestedCompanyUserInvitationTransfer = $companyUserInvitationSendRequestTransfer->getCompanyUserInvitation();
+        $idCompanyUser = $companyUserInvitationSendRequestTransfer->getIdCompanyUser();
 
-        if (!$this->can(ManageCompanyUserInvitationPermissionPlugin::KEY, $companyUserInvitationSendRequestTransfer->getIdCompanyUser())) {
+        if (
+            $requestedCompanyUserInvitationTransfer === null
+            || $idCompanyUser === null
+            || !$this->can(ManageCompanyUserInvitationPermissionPlugin::KEY, $idCompanyUser)
+        ) {
             return $companyUserInvitationSendResponseTransfer;
         }
 
-        $companyUserInvitationTransfer = $this->invitationReader->findCompanyUserInvitationById(
-            $companyUserInvitationSendRequestTransfer->getCompanyUserInvitation(),
+        $companyUserInvitationTransfer = $this->invitationReader->findCompanyUserInvitationByIdAndIdCompanyUser(
+            $requestedCompanyUserInvitationTransfer,
+            $idCompanyUser,
         );
 
         if (!$companyUserInvitationTransfer) {
@@ -70,7 +77,7 @@ class InvitationSender implements InvitationSenderInterface
         }
 
         $companyUserInvitationSendResponseTransfer->setIsSuccess(
-            $this->send($companyUserInvitationSendRequestTransfer->getIdCompanyUser(), $companyUserInvitationTransfer),
+            $this->send($idCompanyUser, $companyUserInvitationTransfer),
         );
 
         return $companyUserInvitationSendResponseTransfer;
